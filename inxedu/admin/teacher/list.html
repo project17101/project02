@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../../css/bootstrap-table.min.css" />
+		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="../../js/bootstrap-table.js" ></script>
+		<script type="text/javascript" src="../../js/bootstrap-table-zh-CN.min.js" ></script>
+		<script>
+			$(function(){
+				$("#mytab").bootstrapTable({
+					url:"http://127.0.0.1:8080/findteachar",
+					method: "post",
+					contentType: "application/x-www-form-urlencoded",
+					dataType: "json",
+					pagination: true, //显示分页栏
+					pageNumber: 1, //指定初始的页码
+					pageSize: 5, //每页显示的条数
+					pageList: [5, 8, 10], //设置每页显示的条数的集合
+					sidePagination: "server", //设置服务端分页
+					queryParams: queryParam, //设置请求的参数
+					queryParamsType: "limit", //设置参数类型，'limit' 
+			
+					columns:[
+					{
+						field:'ID',
+						title:'ID'
+					},
+					{
+						field:'NAME',
+						title:'姓名'
+					},
+					{
+						field:'IS_STAR',
+						title:'头衔',
+						formatter:function(value,row,index){
+				        				return value=="1"?"高级讲师":"首席讲师"; 
+				        	 		}
+
+					},
+					{
+						field:'EDUCATION',
+						title:'资历'
+					},
+					{
+						field:'CAREER',
+						title:'简介'
+					},
+					{
+						field:'CREATE_TIME',
+						title:'添加时间'
+					},
+					{
+						field:'SORT',
+						title:'排序'
+					},
+					{
+						field:'sar',
+						title:'操作',
+						formatter: operateFormatter
+					}]
+				})
+			
+			
+			function queryParam(param){
+			return {
+				startrow:param.offset,
+				pagesize:param.limit
+			 } 
+			}
+		}
+			);
+			function operateFormatter(value, row, index) {
+			       return [
+				     '<a href="toaddexam_db.html" class="btn btn-primary" onclick="doSubmit();return false;">修改</a>',
+					 '<input type="button" value="删除" class="btn btn-danger"  data-toggle="modal"  style="display:inline">',
+			        ].join('');
+			   }
+		</script>
+
+	</head>
+	<body>
+		<!--
+        	作者：offline
+        	时间：2018-11-29
+        	描述： 按条件查询
+        -->
+        <div>
+        	<span>
+        		讲师名称:
+        		<input type="text" name="name"/>
+        	</span>
+        	<span>
+        		<select name="is_star">
+        			<option value="0">请选择</option>
+        			<option value="1">高级讲师</option>
+        			<option value="2">首席讲师</option>
+        		</select>
+        	</span>
+        	<span>
+        		添加时间:
+        		<input type="date" name="create_time"/>
+        		-
+        		<input type="date" name="create_time" />
+        	</span>
+        	<span>
+        		<input type="button" value="查找" class="btn btn-primary"  data-toggle="modal"  style="display:inline">
+        	</span>
+        	<span>
+        		<input type="button" value="清空" class="btn btn-primary"  data-toggle="modal"  style="display:inline">
+        	</span>
+        	
+        </div>
+        
+		<!--
+        	作者：offline
+        	时间：2018-11-28
+        	描述：教师列表
+        -->
+        <table id="mytab"></table>
+	</body>
+</html>
