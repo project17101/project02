@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -91,10 +92,10 @@
         <div>
         	<span>
         		讲师名称:
-        		<input type="text" name="name"/>
+        		<input type="text" name="name" id="name" placeholder="讲师名称"/>
         	</span>
         	<span>
-        		<select name="is_star">
+        		<select name="is_star" id="is_star">
         			<option value="0">请选择</option>
         			<option value="1">高级讲师</option>
         			<option value="2">首席讲师</option>
@@ -102,9 +103,9 @@
         	</span>
         	<span>
         		添加时间:
-        		<input type="date" name="create_time"/>
+        		<input type="date" name="create_time_start" id="create_time_start" placeholder="开始添加时间"/>
         		-
-        		<input type="date" name="create_time" />
+        		<input type="date" name="update_time" id="update_time" placeholder="结束添加时间"/>
         	</span>
         	<span>
         		<input type="button" value="查找" class="btn btn-primary"  data-toggle="modal"  style="display:inline">
