@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-table.min.css" />
+	
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-table.js"></script>
+			<script type="text/javascript" src="js/bootstrap-table-zh-CN.min.js" ></script>
+	</head>
+	<script>
+		$(function(){
+			
+			 $("#tab").bootstrapTable({
+					url:"http://127.0.0.1:8080/xueyuanchengji",
+					method: "post",
+					contentType: "application/x-www-form-urlencoded",
+					dataType: "json",
+					pagination: true, //显示分页栏
+					pageNumber: 1, //指定初始的页码
+					pageSize: 5, //每页显示的条数
+					pageList: [5, 8, 10], //设置每页显示的条数的集合
+					sidePagination: "server", //设置服务端分页
+					queryParams: queryParam, //设置请求的参数
+					queryParamsType: "limit", //设置参数类型，'limit' 
+
+					columns: [
+
+						{
+							field: "user_name",
+							title: "学员名称"
+						},
+						{
+							field: "p_name",
+							title: "试卷名称"
+						},
+						{
+							field: "null",
+							title: "考试时间",
+								formatter: function(value, row, index) {
+
+								return row.sdate+"<br/>"+row.edate;
+							}
+						},
+						{
+							field: "ip",
+							title: "ip"
+						},
+						{
+							field: "score",
+							title: "分数"
+						}
+					]
+
+				})
+			
+		   	
+			
+				
+				
+				function queryParam(param){
+			return {
+				startrow:param.offset,
+				pagesize:param.limit,
+				id:$("#banji").val(),
+				p_name:$("#shijuan").val()
+			}
+		}
+				
+					$.ajax({
+				url: "http://localhost:8080/banji",
+				type: "POST",
+				dateType: "json",
+				success: function(msg) {
+					
+					var str = "";
+					$.each(msg, function(d, i) {
+						str = str + "<option value='"+i.id+"'>"+i.cname+"</option>"
+					});
+					$("#banji").append(str);
+				}
+			});
+
+			$.ajax({
+				url: "http://localhost:8080/shijuan",
+				type: "POST",
+				dateType: "json",
+				success: function(msg) {
+					
+					var str = "";
+					$.each(msg, function(d, i) {
+						str = str + "<option value='"+i.p_name+"'>"+i.p_name+"</option>"
+					});
+					$("#shijuan").append(str);
+				}
+			});
+			
+		})
+		
+		function fun(){
+			$("#tab").bootstrapTable("refresh","http://127.0.0.1:8080/xueyuanchengji");
+		}
+		
+	</script>
+	
+	
+	<body>
+		<select id="banji">
+		<option value="">请选择</option>	
+			
+		</select>
+		
+		<select id="shijuan">
+			<option value="">请选择</option>
+			
+		</select>
+		<input type="button" onclick="fun()" value="查找"/>
+		
+		<table id="tab"></table>
+	</body>
+</html>
