@@ -1,9 +1,459 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
-		<title></title>
-	</head>
-	<body>
+		<meta charset="utf-8" />
+		<title></title> 
+
+		<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/bootstrap-table.min.css"/>
+		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-table.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-table-zh-CN.min.js"></script>
+
+</head>
+			
+<script>$(function() {
+	$('#mytab').bootstrapTable({
+		url: 'http://127.0.0.1:8080/list',
+		method: 'get',
+		loadMsg : '数据加载中...',
+		striped: true,                      //是否显示行间隔色
+		cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+		pagination: true,                   //是否显示分页（*）
+		sortable: false,                     //是否启用排序
+		sortOrder: "asc",                   //排序方式
+		showRefresh: true,                   //增加刷新
+        showColumns: true,                   //显示列名
+        toolbar: '#exampleTableEventsToolbar',// 可以在table上方显示的一条工具栏，
+        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1, //指定初始的页码
+        pageSize: 12, //每页的记录行数（*）
+        pageList: [12], //设置每页显示的条数的集合
+        strictSearch: true,
+        clickToSelect: true,                //是否启用点击选中行
+        uniqueId: "article_ID",             //每一行的唯一标识，一般为主键列    
+                queryParams : function (params) {//上传服务器的参数
+            var temp = {                    //如果是在服务器端实现分页，limit、offset这两个参数是必须的
+//              limit : params.limit,      // 每页显示数量
+//              offset : params.offset,     // SQL语句起始索引
+//                page: (params.offset / params.limit) + 1,   //当前页码*/
+                author:$('#author').val(),
+                 time_start:$('#time_start').val(),
+                 article_TYPE:$('#article_TYPE').val(),
+                  time_end:$('#time_end').val(),
+            };
+            return temp;
+        },
+        
+        
+		columns: [
+		{field:'ck',checkbox:true},
+		{
+				field: 'title',
+				title: '文章标题'
+			},
+			{
+				field: 'author',
+				title: '文章作者'
+			},
+			{
+				field: 'source',
+				title: '文章来源'
+			},
+			{
+				field: 'article_TYPE',
+				title: '文章类型'
+			},
+			{
+				field: 'create_TIME',
+				title: '文章创建时间',
+				 sortable: true
+                //——修改——获取日期列的值进行转换
+//               formatter: function (value, row, index) {
+//                          return changeDateFormat(value)
+//                      } 
+			},
+			{
+				field: 'publish_TIME',
+				title: '文章发布时间',
+				 sortable: true
+                //——修改——获取日期列的值进行转换
+//               formatter: function (value, row, index) {
+//                          return changeDateFormat(value)
+//                      } 
+			},
+			{
+				field: 'click_NUM',
+				title: '点击量'
+			}
+
+			,
+			{
+				field: 'null',
+				title: '操作',
+				formatter: function(value, row, index) {
+					//var updbt = "<button type='button' onclick='showmodal(" + row.article_ID + ");' class='btn btn-xs btn-warning'>修改<tton>";
+					return  "<button type='button' onclick='del(" + row.article_ID + ")' class='btn btn-xs btn-danger'>删除<tton>" +  "<button type='button' onclick='showmodal(" + row.article_ID + ")' class='btn btn-xs btn-warning'>修改<tton>";
+				}
+			}		
+		]
+	});	
+	 //查询按钮事件
+    $('#chazhao').click(function(){
+        $('#mytab').bootstrapTable('refresh', {url:"http://127.0.0.1:8080/list/edu_article"});
+    })
+    
+})
+</script>  
+
+<!--
+	作者：offline
+	时间：2018-11-29
+	描述：到修改
+-->	
+<script type="text/javascript">
+	function showmodal(article_ID) {
+		alert(article_ID+"   到修改的ID");
+		   alert("修改");
+		  $.ajax({
+			crossDomain: true,
+			type: "get",
+			async:true,  //默认是true异步传输，false是同步传输
+			url: "http://127.0.0.1:8080/toupd/ARTICLE_ID", //后台的删除地址
+			dataType: 'json',
+			data: {
+				"ARTICLE_ID": article_ID
+			},
+			success: function(data) {				
+				if(data != "" && data != "null") {	
+					alert(data.article_ID);
+					alert(123);
+					           $("#title").attr("value",data.title);
+					           $("#type").attr("value",data.article_TYPE);
+					           $("#author").attr("value",data.author);
+					           $("#source").attr("value",data.source);
+					           $("#clickNum").attr("value",data.click_NUM);
+					           $("#imageFile").attr("value",data.image_URL);
+					           $("#content").attr("value",data.content);
+					            $("#sort").attr("value",data.sort);
+					            $("#article_ID").attr("value",data.article_ID);
+					$("#myModal").modal("show");
+				} else {
+					alert("到修改失败");
+}
+}
+});
+}
+
+function updbtn(article_ID) {
+	alert("开始执行修改咯");
+					 var title =  document.getElementById('title').value; 		            //title
+					 var type1 =  document.getElementById('type1').value; 		            //type
+					 var author1 =  document.getElementById('author1').value; 		        //author
+					 var source =  document.getElementById('source').value; 	            //source
+					 var clickNum =  document.getElementById('clickNum').value; 		    //clickNum
+					 var showImage =  document.getElementById('showImage').value; 	        //showImage
+					 var content =  document.getElementById('content').value; 		        //content
+					 var sort =  document.getElementById('sort').value; 		            //sort
+			         var article_ID =  document.getElementById('article_ID').value; 
+			         alert("    showImage    =    "+showImage);
+	$.ajax({
+		type: "post",
+		dataType: "json", 
+		url: "http://127.0.0.1:8080/upd/article_ID",
+		data: {
+		"title":title,
+	    "type":type1,
+	    "author":author1,
+	    "source":source,
+	    "clickNum":clickNum,
+	    "showImage":showImage,
+	    "content":content,
+	    "sort":sort,
+	    "article_ID":article_ID			
+		},
+		success: function(data) {
+			if(data == "1") {
+				alert("修改成功");
+				$("#myModal").modal("hide");
+				$("#mytab").bootstrapTable("refresh", "http://127.0.0.1:8080/list");
+			} else {
+				alert("添加失败");
+			}
+		}
+	});
+  }
+</script>
+
+
+<!--
+	作者：offline
+	时间：2018-11-26
+	描述： 删除
+-->	
+<script type="text/javascript">
+	function del(article_ID) {
+		alert(article_ID);
+		$.ajax({
+			crossDomain: true,
+			type: "post",
+			url: "http://127.0.0.1:8080/del/ARTICLE_ID", //后台的删除地址
+			dataType: 'json',
+			data: {
+				"ARTICLE_ID": article_ID
+			},
+			success: function(msg) {
+				if(msg == "1") {
+					alert("删除成功");
+					$("#mytab").bootstrapTable("refresh", "http://127.0.0.1:8080/list"); //删除之后进行刷新
+				} else {
+					alert("删除失败");
+				}
+			}
+		});
+	}
+</script>
+
+
+<!--    批量删除还没写完批量删除还没写完批量删除还没写完批量删除还没写完批量删除还没写完批量删除还没写完批量删除还没写完  -->
+<!--
+	作者：offline
+	时间：2018-11-27
+	描述：批量删除
+-->
+
+
+
+
+<script type="text/javascript">
+//批量删除
+//删除按钮事件
+    	function piliang() {   
+      // $("#table").bootstrapTable('getSelections');为bootstrapTable自带的，所以说一定要使用bootstrapTable显示表格,#table：为table的id
+      var rows = $("#mytab").bootstrapTable('getSelections');
+      if (rows.length == 0) {// rows 主要是为了判断是否选中，下面的else内容才是主要
+        alert("请先选择要删除的记录!");
+        return;
+      } else {
+        var arrays = new Array();// 声明一个数组
+        $(rows).each(function () {// 通过获得别选中的来进行遍历
+          arrays.push(this.article_ID);// cid为获得到的整条数据中的一列
+        });
+        var article_ID = arrays.join(','); // 获得要删除的id
+       var article_ID = {article_ID };
+       alert(article_ID.article_ID);
+       	$.ajax({ 
+ 	 		crossDomain: true,
+			type: "post",	 		
+			url: "http://127.0.0.1:8080/del/ARTICLE_ID", 
+			dataType: "json", 
+			data:{
+ 	 			"ARTICLE_ID": article_ID.article_ID
+ 	 		},
+			success: function (msg) {
+				if(msg == "1") {			
+					alert("删除失败");
+				} else {
+						alert("删除成功");
+					$("#mytab").bootstrapTable("refresh", "http://127.0.0.1:8080/list"); //删除之后进行刷新
+				}
+			}
+		});
+      }
+    };   
+</script>
+
+
+
+<!--
+	作者：offline
+	时间：2018-11-27
+	描述：清空
+--><script>function qingkong() {
+	document.getElementById('author').value="";
+	document.getElementById('article_TYPE').value="";
+	document.getElementById('time_start').value="";
+	document.getElementById('time_end').value="";
+}</script>
+
+
+
+
+
+
+	<body>	
+		<div>
+		<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：标题、作者、来源的模糊查询
+        -->
+		<input type="text" id="author" name="author" placeholder="标题、作者、来源" />
+			<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：文章类型的模糊查询
+        -->
+		<select name="article_TYPE" id="article_TYPE">
+			<option value="">请选择类型</option>
+			<option value="2">文章</option>
+		</select>
+			<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：创建时间模糊查询
+        -->
+		<input type="text" name="time_start" id="time_start"  placeholder="开始创建时间"/>-<input type="text" id="time_end" name="time_end" placeholder="结束创建时间"/>
+			<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：模糊查询按钮
+        -->
+		<input type="button" name="chazhao" id="chazhao"  value="查找"/>
+			<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：清空按钮
+        -->
+		<input type="button" name="qingkong" id="qingkong"  value="清空" onclick="qingkong()"/>
+		<!--
+        	作者：offline
+        	时间：2018-11-27
+        	描述：批量删除
+        -->
+			<input type="button" value="批量删除" onclick="piliang()"/>
+		</div>		
+<div>
+	<table id="mytab" align="center"></table>
+</div>
+
+		
+
+
+	
+	
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">信息修改</h4>
+            </div>
+            <form class="form-horizontal" role="form" id="addform">
+            
+            
+             <div class="form-group">
+                            	
+								<label for="article_ID" class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">	
+									<input type="hidden" id="article_ID" name="article_ID"/>
+								</div>
+							</div>	
+            
+            
+                            <div class="form-group">
+								<label for="title" class="col-sm-3 control-label">标题:</label>
+								<div class="col-sm-9">	
+									<input type="text" class="form-control" id="title" name="title">
+								</div>
+							</div>		
+							
+							   <div class="form-group">
+								<label for="type1" class="col-sm-3 control-label">文章类型:</label>
+								<div class="col-sm-9">
+									<select id="type1" name="type1">
+										<option value="null">请选择</option>
+											<option value="2">文章</option>
+											</script>
+									</select>
+								</div>
+							</div>		
+							
+								  <!--<div class="form-group">
+								<label for="type" class="col-sm-3 control-label">文章类型:</label>
+								<div class="col-sm-9">
+									<select id="type" name="type">
+										<option value="null">请选择</option>
+										<script>
+											var v_select = $("#deptno");
+											$(function(){
+												$.ajax({
+													type:"get",
+													url:"http://127.0.0.1:8099/dept",//访问后台查询地址,查询dept
+													success:function(data){
+														$.each(data, function(index,value) {
+															v_select.append("<option value='"+value.DEPTNO+"'>"+value.DNAME+"</option>");
+														});
+													}
+												});
+											})
+										</script>
+									</select>
+								</div>
+							</div>	
+											-->
+							
+							  <div class="form-group">
+								<label for="author1" class="col-sm-3 control-label">作者:</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="author1" name="author1">
+								</div>
+							</div>
+							
+							
+							  <div class="form-group">
+								<label for="source" class="col-sm-3 control-label">来源:</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="source" name="source">
+								</div>
+							</div>
+							
+							
+							
+								  <div class="form-group">
+								<label for="clickNum" class="col-sm-3 control-label">点击数:</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="clickNum" name="clickNum">
+								</div>
+							</div>
+							
+								  <div class="form-group">
+								<label for="showImage" class="col-sm-3 control-label">封面图片:</label>
+								<div class="col-sm-9">
+									<img id="ss" width="180" height="100" src="${ctx }/static/admin/assets/logo.png">
+						<input type="file" value="上传" id="showImage" name="showImage" />
+						<font color="red">(请上传宽高为： 640*357 的图片)</font>
+								</div>
+							</div>
+							
+								  <div class="form-group">
+								<label for="content" class="col-sm-3 control-label">内容:</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="content" name="content">
+								</div>
+							</div>
+							
+								  <div class="form-group">
+								<label for="sort" class="col-sm-3 control-label">排序值:</label>
+								<div class="col-sm-9">
+									<input type="text" class="form-control" id="sort" name="sort">
+								</div>
+							</div>
+							
+							
+							
+							
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="updbtn()">修改</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 	</body>
 </html>

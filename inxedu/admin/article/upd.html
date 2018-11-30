@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>	
+		<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/bootstrap-table.min.css"/>
+		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-table.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-table-zh-CN.min.js"></script>
+	</head>
+	
+	<!--
+    	作者：offline
+    	时间：2018-11-29
+    	描述：接收数据
+    -->
+	<script>				
+			    $.ajax({ 
+   	 		crossDomain: true,
+			type: "post",	 		
+			url: "http://127.0.0.1:8080/toupd/ARTICLE_ID", 
+			dataType: "json", 
+			data:{
+				"AUTHOR":author,
+   	 			"TITLE": title,
+   	 			"SUMMARY": summary,
+   	 			"ARTICLE_TYPE": type,
+   	 			"SOURCE": source,
+   	 			"CLICK_NUM": clickNum,
+// 	 			"publishTime": publishTime,
+   	 			"CONTENT": content,
+   	 			"SORT": sort,
+   	 			"IMAGE_URL" :imageFile
+   	 		},
+			success: function (msg) {
+				if(msg == "1") {	
+						alert("修改成功");
+					window.location.href="showlist.html";
+				} else {
+					alert("修改失败");
+				}
+			}
+		});
+	</script>
+	
+	
+
+	<!--
+    	作者：offline
+    	时间：2018-11-29
+    	描述：添加
+    -->
+<script>
+	function addArticle(article_ID){
+		alert(document.getElementById('article_ID').value);//隐藏域ID
+     var title =  document.getElementById('title').value;   //title标题
+	     var summary =  document.getElementById('summary').value;   // summary摘要
+	     var type =  document.getElementById('type').value;   // type类型
+	     var source =  document.getElementById('source').value;   // source来源
+	     var clickNum =  document.getElementById('clickNum').value;   //clickNum点击数
+//	     var publishTime =  document.getElementById('publishTime').value;   //publishTime发布时间
+	     var content =  document.getElementById('content').value;    //content内容
+	     var sort =  document.getElementById('sort').value;   //sort排序值
+	       var author =  document.getElementById('author').value;   //author作者
+	         var imageFile =  document.getElementById('imageFile').value; 
+	    $.ajax({ 
+   	 		crossDomain: true,
+			type: "post",	 		
+			url: "http://127.0.0.1:8080/upd", 
+			dataType: "json", 
+			data:{
+				"AUTHOR":author,
+   	 			"TITLE": title,
+   	 			"SUMMARY": summary,
+   	 			"ARTICLE_TYPE": type,
+   	 			"SOURCE": source,
+   	 			"CLICK_NUM": clickNum,
+// 	 			"publishTime": publishTime,
+   	 			"CONTENT": content,
+   	 			"SORT": sort,
+   	 			"IMAGE_URL" :imageFile
+   	 		},
+			success: function (msg) {
+				if(msg == "1") {	
+						alert("修改成功");
+					window.location.href="showlist.html";
+				} else {
+					alert("修改失败");
+				}
+			}
+		});
+	}
+</script>	
+	<body>	
+		<div class="pad20" style="background-color: #f0f0f0;">
+			<input type="hidden" name="article.imageUrl">
+			<table style="line-height: 35px;">
+				<tr>
+					<td>
+						<font color="red">*</font>标题
+					</td>
+					<td>
+						<input type="hidden" id="article_ID" name="article_ID" value="article_ID"/>
+						<input name="title" id="title" data-rule="标题:required;" type="text" style="width: 580px;" />
+					</td>
+				</tr>
+				<tr>
+					<td>摘要：</td>
+					<td>
+						<textarea name="summary" id="summary" style="width: 580px; height: 90px;" data-rule="required;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<font color="red">*</font>文章类型：
+					</td>
+					<td>
+						<select name="type" id="type">
+							<option value="2">文章</option>
+						</select> 作者：
+						<input name="author" id="author" value="" type="text" style="width: 100px;" />
+						来源：
+						<input type="text" value="" name="source" id="source" />
+					</td>
+				</tr>
+				<tr>
+					<td>点击数：</td>
+					<td>
+						<input name="clickNum" id="clickNum"   type="text" style="width: 140px;" value="0"  onkeyup="this.value=this.value.replace(/\D/g,'')" data-rule="required;"/>
+					</td>
+				</tr>
+				<!--<tr>
+					<td>发布时间：</td>
+					<td>
+						<input name="publishTime" id="publishTime"   type="date" style="width: 140px;z-index: 1000;position:relative;" data-rule="required;"/>
+					</td>
+				</tr>-->
+				
+
+	 <!--
+     	作者：offline
+     	时间：2018-11-29
+     	描述：图片图片图片图片图片图片图片图片图片图片图片图片图片图片图片
+     -->
+				
+				<tr>
+					<td>封面图片：</td>
+					<td>
+						<img id="showImage" width="180" height="100" src="${ctx }/static/admin/assets/logo.png">
+						<input type="file" value="上传" id="imageFile" name="imageFile" />
+						<font color="red">(请上传宽高为： 640*357 的图片)</font>
+					</td>
+				</tr>
+	
+	 <!--
+     	作者：offline
+     	时间：2018-11-29
+     	描述：图片图片图片图片图片图片图片图片图片图片图片图片图片图片图片
+     -->							
+				<tr>
+					<td>
+						<font color="red">*</font>内容：
+					</td>
+					<td>
+						<textarea name="content" id="content" data-rule="required;" style="background-image: none;margin-top:26px;"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>排序值：</td>
+					<td>
+						<input name="sort" id="sort"   type="text" style="width: 140px;" value="0"  onkeyup="this.value=this.value.replace(/\D/g,'')" data-rule="required;"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<input onclick="addArticle(article_ID)" class="button" type="button" value="修改">
+					</td>
+				</tr>
+			</table>
+	</div>	
+	</body>
+	
+	
+	
+</html>
