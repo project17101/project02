@@ -62,7 +62,7 @@
 						title:'操作',
 						formatter: operateFormatter
 					}]
-				})
+				});
 			
 			
 			function queryParam(param){
@@ -81,6 +81,8 @@
 		    	 $('#mytab').bootstrapTable('refresh', {url:"http://127.0.0.1:8080/findteachar"});
 		    })
 		});
+		
+			//添加按钮的操作
 			function operateFormatter(value, row, index) {
 			       return [
 				     '<a href="toaddexam_db.html" class="btn btn-primary" onclick="doSubmit();return false;">修改</a>',
